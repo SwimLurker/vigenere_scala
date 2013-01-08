@@ -47,5 +47,5 @@ object Runner {
 	
 	private def decryptChar(encChar: Char, cipherChar: Char): Char = ((((encChar + 26) - cipherChar) % 26) + 'A').toChar
 
-  private def isLetter(c: Char): Boolean = if (c>='A' && c<='Z') true else false
+  private def isLetter(c: Char): Boolean = if ((c>='A' && c<='Z')||(c>='a' && c<='z')) true else false
 }
