@@ -15,36 +15,37 @@ object Runner {
 		println("Usage: main -e <srouce string> <cipher> //Encrypt source string with the cipher by vigenere algorithm;")
 		println("       main -d <encrypted string> <cipher> //Decrypt encrypted string with the cipher by vigenere algorithm;")
 	}
-	private def encrypt(srcStr: String, cipher: String): String = encryptInternal(srcStr, cipher, cipher)
+	private def encrypt(srcStr: String, cipher: String): String = encryptInternal(srcStr.toList, cipher.toList, cipher.toList).mkString
 	
-	private def encryptInternal(srcStr: String, cipherRemain: String, cipher: String): String = {
+	private def encryptInternal(srcStr: List[Char], cipherRemain: List[Char], cipher: List[Char]): List[Char] = {
 		srcStr match {
 			case Nil => Nil
 			case sc::ss if isLetter(sc) => 
 				cipherRemain match {
-					case Nil = > encryptInternal(srcStr, cipher, cipher)
-					case cc::cs => encryptChar(toUpper(sc), toUpper(cc))::encryptInternal(ss, cs, cipher)
+					case Nil => encryptInternal(srcStr, cipher, cipher)
+					case cc::cs => encryptChar(sc.toUpper, cc.toUpper)::encryptInternal(ss, cs, cipher)
 				}
-			case _ => ' '::encryptInternal(ss, cipherRemain, cipher)
+			case sc::ss => ' '::encryptInternal(ss, cipherRemain, cipher)
 		}			
 	}
 	
-	private def encryptChar(srcChar: Char, cipherChar: Char): Char = (((srcChar - 'A') + (cipherChar - 'A')) mod 26) + 'A'
+	private def encryptChar(srcChar: Char, cipherChar: Char): Char = ((((srcChar - 'A') + (cipherChar - 'A')) % 26) + 'A').toChar
 	
-	private def decrypt(encStr: String, cipher: String): String = decryptInternal(encStr, cipher, cipher)
+	private def decrypt(encStr: String, cipher: String): String = decryptInternal(encStr.toList, cipher.toList, cipher.toList).mkString
 	
-	private def decryptInternal(encStr: String, cipherRemain: String, cipher: String): String = {
-		encStr match {
+	private def decryptInternal(encStr: List[Char], cipherRemain: List[Char], cipher: List[Char]): List[Char] = {
+		encStr.toList match {
 			case Nil => Nil
 			case ec::es if isLetter(ec) => 
 				cipherRemain match {
-					case Nil = > decryptInternal(encStr, cipher, cipher)
-					case cc::cs => decryptChar(toUpper(ec), toUpper(cc))::decryptInternal(es, cs, cipher)
+					case Nil => decryptInternal(encStr, cipher, cipher)
+					case cc::cs => decryptChar(ec.toUpper, cc.toUpper)::decryptInternal(es, cs, cipher)
 				}
-			case _ => ' '::decryptInternal(es, cipherRemain, cipher)
+			case ec::es => ' '::decryptInternal(es, cipherRemain, cipher)
 		}			
 	}
 	
-	private def decryptChar(encChar: Char, cipherChar: Char): Char = (((encChar + 26) - cipherChar) mod 26) + 'A'
-	
+	private def decryptChar(encChar: Char, cipherChar: Char): Char = ((((encChar + 26) - cipherChar) % 26) + 'A').toChar
+
+  private def isLetter(c: Char): Boolean = if (c>='A' && c<='Z') true else false
 }
